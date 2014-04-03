@@ -2,12 +2,12 @@
  * Bootstrap Grid Generator
  * Generates a css file extending the functionality of bootstraps's grid system
  * @author Adam Heins
- * 2014-04-01
+ * 2014-04-02
  */
-
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
@@ -19,6 +19,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
 
@@ -29,10 +30,24 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 	
 	// Declare variables
 	JButton generateButton;
+	
 	JLabel numberColumnsLabel;
 	JTextField numberColumnsField;
 	JLabel minLabel;
 	JCheckBox minBox;
+	
+	JLabel titleLabel;
+
+	
+	TablePanel propertyTable;
+	TablePanel divisionTable;
+	
+	JPanel northPanel;
+	JPanel southPanel;
+	JPanel westPanel;
+	JPanel eastPanel;
+	
+	JTabbedPane tabPane;
 
 
 	/**
@@ -43,23 +58,67 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 		// Set properties of the panel
 		setSize(200,200);
 		setBackground(Color.white);
+		setLayout(new BorderLayout());
+		
+		// Set up north panel
+		northPanel = new JPanel();
+		
+		titleLabel = new JLabel("Bootstrap Grid Extension Generator");
+		titleLabel.setFont(new Font("Calibri",Font.PLAIN,24));
+		northPanel.add(titleLabel);
+		northPanel.setBackground(Color.white);
+		
+		add(northPanel, BorderLayout.NORTH);
+		
+		// Set up the tabbed pane containing the panels
+		tabPane = new JTabbedPane();
+		
+		String colNames [] = {"Property","Value"};
+		String rowData [] [] = {{"position", "relative"},{"min-height", "1px"},{"padding-right", "0px"},{"padding-left","0px"}};
+		propertyTable = new TablePanel(rowData, colNames);
+		tabPane.addTab("Column Properties",propertyTable);
+		
+		String colNames2 [] = {"Column Name","Minimum Viewport Width"};
+		String rowData2 [][] = {{"col-xs", "0"},{"col-sm", "---"},{"col-md", "---"},{"col-lg","---"}};
+		divisionTable = new TablePanel(rowData2, colNames2);
+		tabPane.addTab("Column Types", divisionTable);
+		
+		add(tabPane, BorderLayout.CENTER);
+		
+		// Set up the south panel
+		southPanel = new JPanel();
+		southPanel.setBackground(Color.white);
 		
 		numberColumnsLabel = new JLabel("Number of columns: ");
-		add(numberColumnsLabel);
+		southPanel.add(numberColumnsLabel);
 		
-		// Add the Number of Rows field
-		numberColumnsField = new JTextField(10);
-		add (numberColumnsField);
+		numberColumnsField = new JTextField(3);
+		southPanel.add (numberColumnsField);
 		
 		minLabel = new JLabel("Minify");
-		add (minLabel);
+		southPanel.add (minLabel);
 		
 		minBox = new JCheckBox();
-		add (minBox);
+		southPanel.add (minBox);
 		
-		// Add the Generate button
 		generateButton = new JButton("Generate");
-		add(generateButton);
+		southPanel.add(generateButton);
+		
+		add(southPanel, BorderLayout.SOUTH);
+		
+		// Set up the west panel
+		// Adds 5px border to west side
+		westPanel = new JPanel();
+		westPanel.setSize(5, 5);
+		westPanel.setBackground(Color.white);
+		add(westPanel, BorderLayout.WEST);
+		
+		// Set up the east panel
+		// Adds 5px border to east side
+		eastPanel = new JPanel();
+		eastPanel.setSize(5, 5);
+		eastPanel.setBackground(Color.white);
+		add(eastPanel, BorderLayout.EAST);
 	}
 	
 	
@@ -144,8 +203,7 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 		printColItem(out, name, "width", num, 1);
 		printColItem(out, name + "pull-", "right", num, 0);
 		printColItem(out, name + "push-", "left", num, 0);
-		printColItem(out, name + "offset-", "margin-left", num, 0);
-		
+		printColItem(out, name + "offset-", "margin-left", num, 0);		
 	}
 	
 	
@@ -160,7 +218,7 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 	 */
 	private void printColItem(BufferedWriter out, String name, String property, int num, int start) throws IOException {
 		
-		// Increment in percentage each additional class has
+		// Increment of percentage each additional class has
 		double inc = 100.0 / num;
 		
 		for (int i = start; i < num + 1; i++) {
