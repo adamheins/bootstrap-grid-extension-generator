@@ -2,7 +2,7 @@
  * Bootstrap Grid Generator
  * Generates a css file extending the functionality of bootstraps's grid system
  * @author Adam Heins
- * 2014-04-02
+ * 2014-04-08
  */
 
 import java.awt.BorderLayout;
@@ -28,26 +28,31 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 	// Serial version UID
 	private static final long serialVersionUID = 1L;
 	
-	// Declare variables
-	JButton generateButton;
+	// Formatting strings
+	private String nl;
+	private String sp;
+	private String tb;
 	
-	JLabel numberColumnsLabel;
-	JTextField numberColumnsField;
-	JLabel minLabel;
-	JCheckBox minBox;
+	// Tab pane and inner tables
+	private JTabbedPane tabPane;
+	private TablePanel propertyTable;
+	private TablePanel divisionTable;
 	
-	JLabel titleLabel;
-
+	// Border panels
+	private JPanel northPanel;
+	private JPanel southPanel;
+	private JPanel westPanel;
+	private JPanel eastPanel;
 	
-	TablePanel propertyTable;
-	TablePanel divisionTable;
+	// Label for title
+	private JLabel titleLabel;
 	
-	JPanel northPanel;
-	JPanel southPanel;
-	JPanel westPanel;
-	JPanel eastPanel;
-	
-	JTabbedPane tabPane;
+	// Components on south panel
+	private JButton generateButton;
+	private JLabel numberColumnsLabel;
+	private JTextField numberColumnsField;
+	private JLabel minLabel;
+	private JCheckBox minBox;
 
 
 	/**
@@ -59,6 +64,7 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 		setSize(200,200);
 		setBackground(Color.white);
 		setLayout(new BorderLayout());
+		setSize(500, 500);
 		
 		// Set up north panel
 		northPanel = new JPanel();
@@ -79,30 +85,40 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 		tabPane.addTab("Column Properties",propertyTable);
 		
 		String colNames2 [] = {"Column Name","Minimum Viewport Width"};
-		String rowData2 [][] = {{"col-xs", "0"},{"col-sm", "---"},{"col-md", "---"},{"col-lg","---"}};
+		String rowData2 [][] = {{"col-xs", "0px"},{"col-sm", "768px"},{"col-md", "992px"},{"col-lg","1200px"}};
 		divisionTable = new TablePanel(rowData2, colNames2);
 		tabPane.addTab("Column Types", divisionTable);
 		
 		add(tabPane, BorderLayout.CENTER);
 		
 		// Set up the south panel
-		southPanel = new JPanel();
-		southPanel.setBackground(Color.white);
+		southPanel = new JPanel(new BorderLayout());
+		southPanel.setSize(50,50);
+		
+		JPanel ps1 = new JPanel();
+		ps1.setBackground(Color.white);
+		JPanel ps2 = new JPanel();
+		ps2.setBackground(Color.white);
 		
 		numberColumnsLabel = new JLabel("Number of columns: ");
-		southPanel.add(numberColumnsLabel);
+		ps1.add(numberColumnsLabel);
 		
 		numberColumnsField = new JTextField(3);
-		southPanel.add (numberColumnsField);
-		
-		minLabel = new JLabel("Minify");
-		southPanel.add (minLabel);
+		numberColumnsField.setText("20");
+		ps1.add (numberColumnsField);
 		
 		minBox = new JCheckBox();
-		southPanel.add (minBox);
+		ps1.add (minBox);
+		
+		minLabel = new JLabel("Minify");
+		ps1.add (minLabel);
 		
 		generateButton = new JButton("Generate");
-		southPanel.add(generateButton);
+		generateButton.addActionListener(this);
+		ps2.add(generateButton);
+		
+		southPanel.add(ps1, BorderLayout.NORTH);
+		southPanel.add(ps2, BorderLayout.SOUTH);
 		
 		add(southPanel, BorderLayout.SOUTH);
 		
@@ -124,39 +140,59 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent act) {
-		if (act.getSource() == generateButton) {
-			generate(Integer.parseInt(numberColumnsField.getText())); // Use number field for this section
-		}
 		
+		// Respond to Generate button being pressed
+		if (act.getSource() == generateButton) {
+			generate(Integer.parseInt(numberColumnsField.getText()), minBox.isSelected()); // Use number field for this section
+		}		
 	}
 	
 	
 	/**
 	 * Generate a css file that extends bootstrap to have different grid properties
 	 * @param num Number of columns
+	 * @param minify True if generated code should be minified, false otherwise
 	 */
-	private void generate(int num) {
+	private void generate(int num, boolean minify) {
 		try {
+			
+			// Initialize formatting strings
+			if (minify) {	
+				nl = "";
+				sp = "";
+			} else {
+				nl = "\n";
+				sp = " ";
+			}
 			
 			// Open an output stream to the file
 			BufferedWriter out = new BufferedWriter(new FileWriter("bettergrid.css"));
 			
 			// Import core bootstrap css
-			out.write("@import 'bootstrap.css';\n\n\n");
+			out.write("@import 'bootstrap.css';" + nl + nl + nl);
 			
 			// Print initial properties common to all column
 			String name [] = {".col-xs-",".col-sm-",".col-md-",".col-lg-"};
 			printInitProperties(out, name, num);
 			
 			// Print properties of each class of each column type
-			printColProperties(out, ".col-xs-", num);		
-			out.write("\n\n@media (min-width: 768px) {\n");
-			printColProperties(out, ".col-sm-", num);
-			out.write("}\n\n@media (min-width: 992px) {\n");
-			printColProperties(out, ".col-md-", num);
-			out.write("}\n\n@media (min-width: 1200px) {\n");
-			printColProperties(out, ".col-lg-", num);
-			out.write("\n}");
+			Object [][] tableData = divisionTable.getRowData();
+			for (int i = 0; i < tableData.length; i++) {
+				
+				// Assign tab to default value of none
+				tb = "";
+				
+				// Check if block needs to be within an @media size condition
+				if (isZeroWidth((String)tableData[i][1]))
+					printColProperties(out, "." + tableData[i][0] + "-", num);
+				else {
+					if (!minify)
+						tb = "  ";
+					out.write(nl + "@media" + sp + "(min-width:" + sp + tableData[i][1] + ")" + sp + "{" + nl);
+					printColProperties(out, "." + tableData[i][0] + "-", num);
+					out.write("}" + nl);
+				}
+			}
 			
 			// Close output stream
 			out.close();
@@ -168,7 +204,7 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 	
 	
 	/**
-	 * Print the intial properties that all columns share
+	 * Print the initial properties that all columns share
 	 * @param out Output stream to file
 	 * @param name Array of names of different column types
 	 * @param num Number of columns
@@ -177,13 +213,20 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 	private void printInitProperties(BufferedWriter out, String [] name, int num) throws IOException {
 		for (int i = 1; i < num; i++) {
 			for (int j = 0; j < name.length; j++) {
-				out.write(name[j] + i + ",\n");
+				out.write(name[j] + i + "," + nl);
 			}
 		}
 		for (int j = 0; j < name.length - 1; j++) {
-			out.write(name[j] + num + ",\n");
+			out.write(name[j] + num + "," + nl);
 		}
-		out.write(name[name.length - 1] + num + " {\n  position: relative;\n  min-height: 1px;\n  padding-right: 0px;\n  padding-left: 0px;\n}\n\n");
+		out.write(name[name.length - 1] + num + sp + "{" + nl);
+		
+		// Set properties from table
+		Object [][] tableData = propertyTable.getRowData(); // Consider using a list here
+		for (int i = 0; i < tableData.length; i++) {
+			out.write(sp + sp + tableData[i][0] + ":" + sp + tableData[i][1] + ";" + nl);
+		}
+		out.write("}" + nl + nl);
 	}
 	
 	
@@ -196,9 +239,9 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 	 */
 	private void printColProperties(BufferedWriter out, String name, int num) throws IOException {
 		for (int i = 1; i < num; i++) {
-			out.write(name + i + ",\n");
+			out.write(tb + name + i + "," + nl);
 		}
-		out.write(name + num + " {\n  float: left;\n}\n\n");
+		out.write(tb + name + num + sp + "{" + nl + tb + sp + sp + "float:" + sp + "left;" + nl + tb + "}" + nl);
 		
 		printColItem(out, name, "width", num, 1);
 		printColItem(out, name + "pull-", "right", num, 0);
@@ -222,8 +265,19 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 		double inc = 100.0 / num;
 		
 		for (int i = start; i < num + 1; i++) {
-			out.write(name + i + " {\n  " + property + ": " + (inc * i) + "%;\n}\n\n");
+			out.write(nl + tb + name + i + sp + "{" + nl + tb + sp + sp + property + ":" + sp + (inc * i) + "%;" + nl + tb + "}" + nl);
 		}
+	}
+	
+	
+	/**
+	 * Analyzes a string to determine whether or not it is indicating a viewport width of zero
+	 * If the first character is 0 and is not followed by another digit or radix point, it is taken as zero 
+	 * @param str String to be analyzed
+	 * @return Returns true if string is determined to mean zero, false otherwise
+	 */
+	private boolean isZeroWidth (String str) {
+		return (str.charAt(0) == '0' && (str.length() == 1 || (!Character.isDigit(str.charAt(1)) && str.charAt(1) != '.')));
 	}
 	
 	

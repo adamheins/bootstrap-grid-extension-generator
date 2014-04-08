@@ -3,7 +3,7 @@
  * Extends a panel containing a JTable inside of a JScrollPane
  * Provides buttons to modify the table
  * @author Adam Heins
- * 2014-04-02
+ * 2014-04-08
  */
 
 import java.awt.BorderLayout;
@@ -155,5 +155,27 @@ public class TablePanel extends JPanel implements ActionListener{
 				table.setRowSelectionInterval(selRows[0] + 1, selRows[selRows.length - 1] + 1);
 			}
 		}	
-	}	
+	}
+	
+	
+	/**
+	 * Get the data contained in the table
+	 * @return A 2-D array of the table data
+	 */
+	public Object [][] getRowData () {
+		int columnCount = table.getColumnCount();
+		int rowCount = table.getRowCount();
+		
+		// Initialize array to store table data
+		Object rowData [][] = new Object[rowCount][columnCount];
+		
+		// Read data out of table into array
+		for (int i = 0; i < rowCount; i++) {
+			for (int j = 0; j < columnCount; j++) {
+				rowData[i][j] = table.getValueAt(i, j);
+			}
+		}
+		
+		return rowData;
+	}
 }
