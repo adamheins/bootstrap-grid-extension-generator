@@ -3,7 +3,7 @@
  * Extends a panel containing a JTable inside of a JScrollPane
  * Provides buttons to modify the table
  * @author Adam Heins
- * 2014-04-08
+ * 2014-04-09
  */
 
 import java.awt.BorderLayout;
@@ -11,6 +11,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -26,11 +27,8 @@ public class TablePanel extends JPanel implements ActionListener{
 	private JScrollPane scrollPane;
 	private JTable table;
 	
-	// Border panels
-	private JPanel southPanel;
-	private JPanel northPanel;
-	private JPanel westPanel;
-	private JPanel eastPanel;
+	// Button panel
+	private JPanel buttonPanel;
 	
 	// Buttons to modify table
 	private JButton addButton;
@@ -49,52 +47,41 @@ public class TablePanel extends JPanel implements ActionListener{
 		// Set a border layout for this panel
 		setLayout(new BorderLayout());
 		
-		// Set up the north panel
-		// Contains the title for the table
-		northPanel = new JPanel();
-		add(northPanel, BorderLayout.NORTH);
-		
 		// Set up the table
 		table = new JTable(new DefaultTableModel(rowData, colNames));
+		table.getTableHeader().setReorderingAllowed(false);
 		scrollPane = new JScrollPane(table);
 		Dimension d = table.getPreferredSize();
 		scrollPane.setPreferredSize(new Dimension(d.width, table.getRowHeight()*4+23));
 		table.setFillsViewportHeight(true);
 		add(scrollPane, BorderLayout.CENTER);	
 		
-		// Set up the west panel
-		// Sets a fixed 5px margin on the left side
-		westPanel = new JPanel();
-		westPanel.setSize(5, 5);
-		add(westPanel, BorderLayout.WEST);
-		
-		// Set up the east panel
-		// Sets a fixed 5px margin on the right side
-		eastPanel = new JPanel();
-		eastPanel.setSize(5, 5);
-		add(eastPanel, BorderLayout.EAST);
+		// Add margins
+		add(Box.createRigidArea(new Dimension(10,0)), BorderLayout.WEST);
+		add(Box.createRigidArea(new Dimension(10,0)), BorderLayout.EAST);
+		add(Box.createRigidArea(new Dimension(10,0)), BorderLayout.NORTH);
 		
 		// Set up the south panel
 		// Contains buttons to control modify table are located here
-		southPanel = new JPanel();
+		buttonPanel = new JPanel();
 		
 		addButton = new JButton("Add Row");
 		addButton.addActionListener(this);
-		southPanel.add(addButton);
+		buttonPanel.add(addButton);
 		
 		removeButton = new JButton("Remove Row");
 		removeButton.addActionListener(this);
-		southPanel.add(removeButton);
+		buttonPanel.add(removeButton);
 		
 		upButton = new JButton("Move Up");
 		upButton.addActionListener(this);
-		southPanel.add(upButton);
+		buttonPanel.add(upButton);
 		
 		downButton = new JButton("Move Down");
 		downButton.addActionListener(this);
-		southPanel.add(downButton);
+		buttonPanel.add(downButton);
 		
-		add(southPanel, BorderLayout.SOUTH);
+		add(buttonPanel, BorderLayout.SOUTH);
 		
 	}
 
