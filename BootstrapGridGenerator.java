@@ -2,7 +2,7 @@
  * Bootstrap Grid Generator
  * Generates a css file extending the functionality of bootstrap's grid system
  * @author Adam Heins
- * 2014-04-09
+ * 2014-04-11
  */
 
 import java.awt.BorderLayout;
@@ -14,12 +14,15 @@ import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.NumberFormat;
 
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
@@ -28,12 +31,13 @@ import javax.swing.JTextField;
 public class BootstrapGridGenerator extends JPanel implements ActionListener {
 
 	// Serial version UID
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -6864487932468206456L;
 	
 	// Formatting strings
 	private String nl;
 	private String sp;
 	private String tb;
+	private String sc;
 	
 	// Tab pane and inner tables
 	private JTabbedPane tabPane;
@@ -47,7 +51,7 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 	// Components on north panel
 	private JLabel titleLabel;
 	private JLabel numberColumnsLabel;
-	private JTextField numberColumnsField;
+	private JFormattedTextField numberColumnsField;
 	private JLabel fileNameLabel;
 	private JTextField fileNameField;
 	
@@ -93,8 +97,11 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 		numberColumnsLabel = new JLabel("Number of columns: ");
 		pn2.add(numberColumnsLabel);
 		
-		numberColumnsField = new JTextField(3);
-		numberColumnsField.setText("20");
+		NumberFormat numFormat = NumberFormat.getInstance();
+		numFormat.setMaximumFractionDigits(0);
+		numberColumnsField = new JFormattedTextField(numFormat);
+		numberColumnsField.setValue(new Double(20));
+		numberColumnsField.setColumns(3);
 		pn2.add (numberColumnsField);	
 		
 		northPanel.add(pn1, BorderLayout.NORTH);
@@ -163,13 +170,15 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 			if (minify) {	
 				nl = "";
 				sp = "";
+				sc = "";
 			} else {
 				nl = "\n";
 				sp = " ";
+				sc = ";";
 			}
 			
 			// Open an output stream to the file
-			BufferedWriter out = new BufferedWriter(new FileWriter(fileNameField.getText()));
+			BufferedWriter out = new BufferedWriter(new FileWriter(readFileName()));
 			
 			// Import core bootstrap css
 			out.write("@import 'bootstrap.css';" + nl + nl + nl);
@@ -200,8 +209,10 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 			// Close output stream
 			out.close();
 			
+			JOptionPane.showMessageDialog(this, "File generated successfully.", "Success!", JOptionPane.INFORMATION_MESSAGE);
+			
 		} catch (IOException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, "Error generating file.", "Error!", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
@@ -225,10 +236,11 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 		out.write(name[name.length - 1] + num + sp + "{" + nl);
 		
 		// Set properties from table
-		Object [][] tableData = propertyTable.getRowData(); // Consider using a list here
-		for (int i = 0; i < tableData.length; i++) {
-			out.write(sp + sp + tableData[i][0] + ":" + sp + tableData[i][1] + ";" + nl);
+		Object [][] tableData = propertyTable.getRowData();
+		for (int i = 0; i < tableData.length - 1; i++) {
+			out.write(sp + sp + tableData[i][0] + ":" + sp + tableData[i][1] + ";" + nl); // All but last one should be hard-coded semi-colons
 		}
+		out.write(sp + sp + tableData[tableData.length - 1][0] + ":" + sp + tableData[tableData.length - 1][1] + sc + nl);
 		out.write("}" + nl + nl);
 	}
 	
@@ -244,7 +256,7 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 		for (int i = 1; i < num; i++) {
 			out.write(tb + name + i + "," + nl);
 		}
-		out.write(tb + name + num + sp + "{" + nl + tb + sp + sp + "float:" + sp + "left;" + nl + tb + "}" + nl);
+		out.write(tb + name + num + sp + "{" + nl + tb + sp + sp + "float:" + sp + "left" + sc + nl + tb + "}" + nl);
 		
 		printColItem(out, name, "width", num, 1);
 		printColItem(out, name + "pull-", "right", num, 0);
@@ -268,7 +280,7 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 		double inc = 100.0 / num;
 		
 		for (int i = start; i < num + 1; i++) {
-			out.write(nl + tb + name + i + sp + "{" + nl + tb + sp + sp + property + ":" + sp + (inc * i) + "%;" + nl + tb + "}" + nl);
+			out.write(nl + tb + name + i + sp + "{" + nl + tb + sp + sp + property + ":" + sp + (inc * i) + "%" + sc + nl + tb + "}" + nl);
 		}
 	}
 	
@@ -277,10 +289,22 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 	 * Analyzes a string to determine whether or not it is indicating a viewport width of zero
 	 * If the first character is 0 and is not followed by another digit or radix point, it is taken as zero 
 	 * @param str String to be analyzed
-	 * @return Returns true if string is determined to mean zero, false otherwise
+	 * @return Returns true if the string is determined to mean zero, false otherwise.
 	 */
 	private boolean isZeroWidth (String str) {
 		return (str.charAt(0) == '0' && (str.length() == 1 || (!Character.isDigit(str.charAt(1)) && str.charAt(1) != '.')));
+	}
+	
+	
+	/**
+	 * Reads the name of file from the text field and appends .css extension if not already present.
+	 * @return String representing the file name with extension.
+	 */
+	private String readFileName() {
+		String name = fileNameField.getText();
+		if (name.indexOf(".css") == -1)
+			name = name.concat(".css");
+		return name;
 	}
 	
 	

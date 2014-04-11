@@ -3,7 +3,7 @@
  * Extends a panel containing a JTable inside of a JScrollPane
  * Provides buttons to modify the table
  * @author Adam Heins
- * 2014-04-09
+ * 2014-04-11
  */
 
 import java.awt.BorderLayout;
@@ -59,9 +59,9 @@ public class TablePanel extends JPanel implements ActionListener{
 		// Add margins
 		add(Box.createRigidArea(new Dimension(10,0)), BorderLayout.WEST);
 		add(Box.createRigidArea(new Dimension(10,0)), BorderLayout.EAST);
-		add(Box.createRigidArea(new Dimension(10,0)), BorderLayout.NORTH);
+		add(Box.createRigidArea(new Dimension(0,10)), BorderLayout.NORTH);
 		
-		// Set up the south panel
+		// Set up the button panel on the bottom
 		// Contains buttons to control modify table are located here
 		buttonPanel = new JPanel();
 		
@@ -82,7 +82,6 @@ public class TablePanel extends JPanel implements ActionListener{
 		buttonPanel.add(downButton);
 		
 		add(buttonPanel, BorderLayout.SOUTH);
-		
 	}
 
 
