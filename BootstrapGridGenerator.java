@@ -2,7 +2,7 @@
  * Bootstrap Grid Generator
  * Generates a css file extending the functionality of bootstrap's grid system
  * @author Adam Heins
- * 2014-04-11
+ * 2014-04-12
  */
 
 import java.awt.BorderLayout;
@@ -14,12 +14,10 @@ import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.NumberFormat;
-
+import javax.swing.text.AbstractDocument;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -51,7 +49,7 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 	// Components on north panel
 	private JLabel titleLabel;
 	private JLabel numberColumnsLabel;
-	private JFormattedTextField numberColumnsField;
+	private JTextField numberColumnsField;
 	private JLabel fileNameLabel;
 	private JTextField fileNameField;
 	
@@ -97,11 +95,9 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 		numberColumnsLabel = new JLabel("Number of columns: ");
 		pn2.add(numberColumnsLabel);
 		
-		NumberFormat numFormat = NumberFormat.getInstance();
-		numFormat.setMaximumFractionDigits(0);
-		numberColumnsField = new JFormattedTextField(numFormat);
-		numberColumnsField.setValue(new Double(20));
-		numberColumnsField.setColumns(3);
+		numberColumnsField = new JTextField (3);
+		((AbstractDocument)numberColumnsField.getDocument()).setDocumentFilter(new NumberDocumentFilter());
+		numberColumnsField.setText("20");
 		pn2.add (numberColumnsField);	
 		
 		northPanel.add(pn1, BorderLayout.NORTH);
@@ -225,6 +221,8 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 	 * @throws IOException
 	 */
 	private void printInitProperties(BufferedWriter out, String [] name, int num) throws IOException {
+		
+		// Print names of all columns
 		for (int i = 1; i < num; i++) {
 			for (int j = 0; j < name.length; j++) {
 				out.write(name[j] + i + "," + nl);
