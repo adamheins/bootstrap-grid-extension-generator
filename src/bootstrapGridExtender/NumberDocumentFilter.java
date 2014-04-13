@@ -6,6 +6,8 @@
  * 2014-04-12
  */
 
+package bootstrapGridExtender;
+
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;

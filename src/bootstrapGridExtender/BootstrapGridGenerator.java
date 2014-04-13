@@ -2,8 +2,10 @@
  * Bootstrap Grid Generator
  * Generates a css file extending the functionality of bootstrap's grid system
  * @author Adam Heins
- * 2014-04-12
+ * 2014-04-13
  */
+
+package bootstrapGridExtender;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -11,9 +13,12 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import javax.imageio.ImageIO;
 import javax.swing.text.AbstractDocument;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -321,11 +326,31 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 		frame.setVisible (true);
 		frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane ().setLayout (new BorderLayout ());
+		setFrameIcons(frame);
 				
 		// Add the panel to the frame
 		frame.getContentPane ().add (gridGen, BorderLayout.CENTER);
 				
 		frame.validate();
 	}
-
+	
+	
+	/**
+	 * Loads and sets the icons for the frame.
+	 * @param frame The frame for which icons are being set.
+	 */
+	private static void setFrameIcons (JFrame frame) {
+		
+		// Load the icons
+		ArrayList<BufferedImage> icons = new ArrayList<BufferedImage>();
+		try {
+			icons.add(ImageIO.read(frame.getClass().getResource("/icon/icon16.png")));
+			icons.add(ImageIO.read(frame.getClass().getResource("/icon/icon32.png")));
+			icons.add(ImageIO.read(frame.getClass().getResource("/icon/icon64.png")));
+			icons.add(ImageIO.read(frame.getClass().getResource("/icon/icon128.png")));
+		} catch (IOException e) {}
+		
+		// Set the icons for the frame
+		frame.setIconImages(icons);
+	}
 }
