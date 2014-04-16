@@ -2,7 +2,7 @@
  * Bootstrap Grid Generator
  * Generates a css file extending the functionality of bootstrap's grid system
  * @author Adam Heins
- * 2014-04-13
+ * 2014-04-15
  */
 
 package bootstrapGridExtender;
@@ -181,15 +181,16 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 			// Open an output stream to the file
 			BufferedWriter out = new BufferedWriter(new FileWriter(readFileName()));
 			
-			// Import core bootstrap css
+			// Print import of core bootstrap css
 			out.write("@import 'bootstrap.css';" + nl + nl + nl);
 			
+			// Get data from Column Types table
+			Object [][] tableData = divisionTable.getRowData();
+			
 			// Print initial properties common to all column
-			String name [] = {".col-xs-",".col-sm-",".col-md-",".col-lg-"};
-			printInitProperties(out, name, num);
+			printInitProperties(out, tableData, num);
 			
 			// Print properties of each class of each column type
-			Object [][] tableData = divisionTable.getRowData();
 			for (int i = 0; i < tableData.length; i++) {
 				
 				// Assign tab to default value of none
@@ -225,18 +226,18 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 	 * @param num Number of columns
 	 * @throws IOException
 	 */
-	private void printInitProperties(BufferedWriter out, String [] name, int num) throws IOException {
+	private void printInitProperties(BufferedWriter out, Object [][] name, int num) throws IOException {
 		
 		// Print names of all columns
 		for (int i = 1; i < num; i++) {
 			for (int j = 0; j < name.length; j++) {
-				out.write(name[j] + i + "," + nl);
+				out.write("." + name[j][0] + "-" + i + "," + nl);
 			}
 		}
 		for (int j = 0; j < name.length - 1; j++) {
-			out.write(name[j] + num + "," + nl);
+			out.write("." + name[j][0] + "-" + num + "," + nl);
 		}
-		out.write(name[name.length - 1] + num + sp + "{" + nl);
+		out.write("." + name[name.length - 1][0] + "-" + num + sp + "{" + nl);
 		
 		// Set properties from table
 		Object [][] tableData = propertyTable.getRowData();
