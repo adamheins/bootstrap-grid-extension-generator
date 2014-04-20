@@ -2,7 +2,7 @@
  * Bootstrap Grid Generator
  * Generates a css file extending the functionality of bootstrap's grid system.
  * @author Adam Heins
- * 2014-04-19
+ * 2014-04-20
  */
 
 package bootstrapGridExtender;
@@ -18,8 +18,10 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+
 import javax.imageio.ImageIO;
 import javax.swing.text.AbstractDocument;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -27,8 +29,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 
 public class BootstrapGridGenerator extends JPanel implements ActionListener {
@@ -73,44 +77,55 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 		setBackground(Color.white);
 		setLayout(new BorderLayout());
 		setSize(500, 500);
+		setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 		
 		// Set up north panel.
 		northPanel = new JPanel(new BorderLayout());
 		northPanel.setBackground(Color.white);
 		
+		// First sub-panel of the north panel.
 		JPanel pn1 = new JPanel();
-		JPanel pn2 = new JPanel();
 		pn1.setBackground(Color.white);
-		pn2.setBackground(Color.white);
-		
 		titleLabel = new JLabel("Bootstrap Grid Extension Generator");
-		titleLabel.setFont(new Font("Calibri",Font.PLAIN,24));
+		titleLabel.setFont(new Font("Calibri", Font.BOLD, 24));
 		pn1.add(titleLabel);
+		northPanel.add(pn1, BorderLayout.NORTH);
+		
+		// Second sub-panel of the north panel.
+		JPanel pn2 = new JPanel(new BorderLayout());
+		pn2.setBackground(Color.white);
+		pn2.add(new JSeparator(SwingConstants.HORIZONTAL), BorderLayout.CENTER);
+		pn2.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+		northPanel.add(pn2, BorderLayout.CENTER);
+		
+		// Third sub-panel of the north panel.
+		JPanel pn3 = new JPanel();
+		pn3.setBackground(Color.white);
 		
 		fileNameLabel = new JLabel("File Name:");
-		pn2.add(fileNameLabel);
+		pn3.add(fileNameLabel);
 		
 		fileNameField = new JTextField(10);
 		fileNameField.setText("gridExtension.css");
-		pn2.add(fileNameField);
+		pn3.add(fileNameField);
 
-		pn2.add(Box.createRigidArea(new Dimension(20,0)));
+		pn3.add(Box.createRigidArea(new Dimension(20,0)));
 		
 		numberColumnsLabel = new JLabel("Number of columns: ");
-		pn2.add(numberColumnsLabel);
+		pn3.add(numberColumnsLabel);
 		
 		numberColumnsField = new JTextField (3);
 		((AbstractDocument)numberColumnsField.getDocument()).setDocumentFilter(new NumberDocumentFilter());
 		numberColumnsField.setText("20");
-		pn2.add (numberColumnsField);	
-		
-		northPanel.add(pn1, BorderLayout.NORTH);
-		northPanel.add(pn2, BorderLayout.SOUTH);
+		pn3.add (numberColumnsField);	
+
+		northPanel.add(pn3, BorderLayout.SOUTH);
 		
 		add(northPanel, BorderLayout.NORTH);
 		
 		// Set up the tabbed pane containing the panels.
 		tabPane = new JTabbedPane();
+		tabPane.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
 		
 		// Set up TablePanel for Column Properties.
 		String colNames [] = {"Property","Value"};
@@ -142,10 +157,6 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 		southPanel.add (minLabel);
 		
 		add(southPanel, BorderLayout.SOUTH);
-		
-		// Add margins on east and west sides.
-		add(Box.createRigidArea(new Dimension(10,0)), BorderLayout.WEST);
-		add(Box.createRigidArea(new Dimension(10,0)), BorderLayout.EAST);
 	}
 	
 	
