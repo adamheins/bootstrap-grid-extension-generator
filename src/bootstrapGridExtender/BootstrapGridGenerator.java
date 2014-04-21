@@ -2,7 +2,7 @@
  * Bootstrap Grid Generator
  * Generates a css file extending the functionality of bootstrap's grid system.
  * @author Adam Heins
- * 2014-04-20
+ * 2014-04-21
  */
 
 package bootstrapGridExtender;
@@ -23,6 +23,7 @@ import javax.imageio.ImageIO;
 import javax.swing.text.AbstractDocument;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -66,6 +67,10 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 	private JButton generateButton;
 	private JLabel minLabel;
 	private JCheckBox minBox;
+	
+	// Icons for file generation messages.
+	ImageIcon errorIcon;
+	ImageIcon successIcon;
 
 
 	/**
@@ -78,6 +83,10 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 		setLayout(new BorderLayout());
 		setSize(500, 500);
 		setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+		
+		// Load message icons.
+		errorIcon = new ImageIcon(getClass().getResource("/icon/error32.png"));
+		successIcon = new ImageIcon(getClass().getResource("/icon/success32.png"));
 		
 		// Set up north panel.
 		northPanel = new JPanel(new BorderLayout());
@@ -229,12 +238,13 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 			
 			// Display success message.
 			JOptionPane.showMessageDialog(this, "File generated successfully.", "Success!", 
-					JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.INFORMATION_MESSAGE, successIcon);
 			
 		} catch (IOException e) {
 			
 			// Display error message.
-			JOptionPane.showMessageDialog(this, "Error generating file.", "Error!", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Error generating file.", "Error!", JOptionPane.ERROR_MESSAGE,
+					errorIcon);
 		}
 	}
 	
