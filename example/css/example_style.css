@@ -1,0 +1,12 @@
+/**
+ * Style for example page of Bootstrap Grid Extension.
+ * Adam Heins
+ * 01-05-2014
+ */
+
+.panel {
+	background: #dddddd;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #aaaaaa;
+}
