@@ -2,10 +2,10 @@
  * Bootstrap Grid Generator
  * Generates a css file extending the functionality of bootstrap's grid system.
  * @author Adam Heins
- * 2014-04-21
+ * 2014-05-01
  */
 
-package bootstrapGridExtender;
+package com.adamheins.bootstrap_grid_extension_generator;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -36,7 +36,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 
-public class BootstrapGridGenerator extends JPanel implements ActionListener {
+public class BootstrapGridExtensionGenerator extends JPanel implements ActionListener {
 
 	// Serial version UID.
 	private static final long serialVersionUID = -6864487932468206456L;
@@ -69,14 +69,14 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 	private JCheckBox minBox;
 	
 	// Icons for file generation messages.
-	ImageIcon errorIcon;
-	ImageIcon successIcon;
+	private ImageIcon errorIcon;
+	private ImageIcon successIcon;
 
 
 	/**
 	 * Constructor.
 	 */
-	public BootstrapGridGenerator () {
+	public BootstrapGridExtensionGenerator () {
 		
 		// Set properties of the panel.
 		setBackground(Color.white);
@@ -84,9 +84,9 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 		setSize(500, 500);
 		setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 		
-		// Load message icons.
-		errorIcon = new ImageIcon(getClass().getResource("/icon/error32.png"));
-		successIcon = new ImageIcon(getClass().getResource("/icon/success32.png"));
+		// Load message icons.		
+		successIcon = new ImageIcon(getClass().getResource("/icon/Success32.png"));
+		errorIcon = new ImageIcon(getClass().getResource("/icon/Error32.png"));
 		
 		// Set up north panel.
 		northPanel = new JPanel(new BorderLayout());
@@ -115,7 +115,7 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 		pn3.add(fileNameLabel);
 		
 		fileNameField = new JTextField(10);
-		fileNameField.setText("gridExtension.css");
+		fileNameField.setText("grid_extension.css");
 		pn3.add(fileNameField);
 
 		pn3.add(Box.createRigidArea(new Dimension(20,0)));
@@ -174,18 +174,22 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 		
 		// Respond to Generate button being pressed.
 		if (act.getSource() == generateButton) {
-			generate(Integer.parseInt(numberColumnsField.getText()), minBox.isSelected());
+			generate();
 		}		
 	}
 	
 	
 	/**
 	 * Generate a css file that extends bootstrap to have different grid properties.
-	 * @param num - Number of columns.
-	 * @param minify - True if generated code should be minified, false otherwise.
 	 */
-	private void generate(int num, boolean minify) {
+	private void generate() {
 		try {
+			
+			// Number of columns to be generated.
+			int numColumns = Integer.parseInt(numberColumnsField.getText());
+			
+			// True if css file should be minified, false otherwise.
+			boolean minify = minBox.isSelected();
 			
 			// Initialize formatting strings.
 			if (minify) {	
@@ -212,7 +216,7 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 			Object [][] tableData = divisionTable.getRowData();
 			
 			// Print initial properties common to all column.
-			printInitProperties(out, tableData, num);
+			printInitProperties(out, tableData, numColumns);
 			
 			// Print properties of each class of each column type.
 			for (int i = 0; i < tableData.length; i++) {
@@ -222,13 +226,13 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 				
 				// Check if block needs to be within an @media size condition.
 				if (isZeroWidth((String)tableData[i][1]))
-					printColProperties(out, "." + tableData[i][0] + "-", num);
+					printColProperties(out, "." + tableData[i][0] + "-", numColumns);
 				else {
 					if (!minify)
 						tb = "  ";
 					out.write(nl + "@media" + sp + "(min-width:" + sp + tableData[i][1] + ")" + sp 
 							+ "{" + nl);
-					printColProperties(out, "." + tableData[i][0] + "-", num);
+					printColProperties(out, "." + tableData[i][0] + "-", numColumns);
 					out.write("}" + nl);
 				}
 			}
@@ -260,20 +264,17 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 		
 		// Print names of all columns
 		for (int i = 1; i < num; i++) {
-			for (int j = 0; j < name.length; j++) {
+			for (int j = 0; j < name.length; j++)
 				out.write("." + name[j][0] + "-" + i + "," + nl);
-			}
 		}
-		for (int j = 0; j < name.length - 1; j++) {
+		for (int j = 0; j < name.length - 1; j++)
 			out.write("." + name[j][0] + "-" + num + "," + nl);
-		}
 		out.write("." + name[name.length - 1][0] + "-" + num + sp + "{" + nl);
 		
 		// Set initial properties from Properties table.
 		Object [][] tableData = propertyTable.getRowData();
-		for (int i = 0; i < tableData.length - 1; i++) {
+		for (int i = 0; i < tableData.length - 1; i++)
 			out.write(sp + sp + tableData[i][0] + ":" + sp + tableData[i][1] + ";" + nl);
-		}
 		out.write(sp + sp + tableData[tableData.length - 1][0] + ":" + sp + tableData[tableData.length - 1][1] 
 				+ sc + nl);
 		out.write("}" + nl + nl);
@@ -313,10 +314,9 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 		double inc = 100.0 / num;
 		
 		// Print property of the column class.
-		for (int i = start; i < num + 1; i++) {
+		for (int i = start; i < num + 1; i++)
 			out.write(nl + tb + name + i + sp + "{" + nl + tb + sp + sp + property + ":" + sp + (inc * i) 
 					+ "%" + sc + nl + tb + "}" + nl);
-		}
 	}
 	
 	
@@ -352,7 +352,7 @@ public class BootstrapGridGenerator extends JPanel implements ActionListener {
 	public static void main(String[] args) {
 		
 		// Create new instance of the CssGridGenerator class.
-		BootstrapGridGenerator gridGen = new BootstrapGridGenerator();
+		BootstrapGridExtensionGenerator gridGen = new BootstrapGridExtensionGenerator();
     	
 		// Declare and set up the frame.
 		JFrame frame = new JFrame();

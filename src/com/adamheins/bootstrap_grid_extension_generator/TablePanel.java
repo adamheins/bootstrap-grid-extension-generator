@@ -3,10 +3,10 @@
  * Extends a panel containing a JTable inside of a JScrollPane.
  * Provides buttons to modify the table.
  * @author Adam Heins
- * 2014-04-19
+ * 2014-05-01
  */
 
-package bootstrapGridExtender;
+package com.adamheins.bootstrap_grid_extension_generator;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -107,9 +107,8 @@ public class TablePanel extends JPanel implements ActionListener{
 			int [] rows = table.getSelectedRows();
 	
 			// Remove selected rows.
-			for (int i = 0; i < rows.length; i++) {
+			for (int i = 0; i < rows.length; i++)
 				model.removeRow(rows[0]);
-			}
 				
 			// Select row immediately after removed row, or previous row if it was the last in the table.
 			if (model.getRowCount() > 0) {
@@ -159,9 +158,8 @@ public class TablePanel extends JPanel implements ActionListener{
 		
 		// Read data out of table into array.
 		for (int i = 0; i < rowCount; i++) {
-			for (int j = 0; j < columnCount; j++) {
+			for (int j = 0; j < columnCount; j++)
 				rowData[i][j] = table.getValueAt(i, j);
-			}
 		}
 		
 		return rowData;

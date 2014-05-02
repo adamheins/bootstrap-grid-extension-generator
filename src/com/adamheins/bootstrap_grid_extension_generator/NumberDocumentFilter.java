@@ -6,7 +6,7 @@
  * 2014-04-19
  */
 
-package bootstrapGridExtender;
+package com.adamheins.bootstrap_grid_extension_generator;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
