@@ -14,7 +14,7 @@ For those who want finer control over the look of their application, four catego
 Enter the name you'd like for your new css file in the File Name field. Use the Column Properties table to adjust properties of all columns. Use the Column Types table to define new types of columns for different viewport widths. Enter the number of columns you would like to generate. Select the Minify box if you want the generated file to be compact. Press the Generate button to generate your new file!
 
 ### Example
-[An example of a bootstrap grid extension in action.](http://adamheins.github.io/BootstrapGridExtensionGenerator/)
+[An example of a bootstrap grid extension in action.](http://adamheins.github.io/bootstrap-grid-extension-generator/)
 
 ### Contact
-adamheins@hotmail.com
+adamwheins@gmail.com
