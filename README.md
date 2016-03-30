@@ -1,20 +1,45 @@
 # Bootstrap Grid Extension Generator
 
-### Description
-An application that generates css files that extend the core grid functionality of bootstrap. The vanilla grid system is restrictive with only 12 columns and four somewhat arbitrary view-port sizes. This application changes that by allowing the user to easily generate as many columns as they like, across user-defined viewport widths.
+## Description
+An application that generates css files that extend the core grid functionality
+of bootstrap. The vanilla grid system is restrictive with only 12 columns and
+four somewhat arbitrary view-port sizes. This application changes that by
+allowing the user to easily generate as many columns as they like, across
+user-defined viewport widths.
 
-#### But what about nesting?
-Bootstrap allows you to nest columns, so you can have as small a column as you want. Why, then, is this tool useful?
-Not only is continuous nesting verbose and messy, there are times when nesting just doesn't cut it. What if one element needs to have a width less than one twelfth of the container, but not be nested? This tool makes it easy.
+### But what about nesting?
+Bootstrap allows you to nest columns, so you can have as small a column as you
+want. Why, then, is this tool useful?
 
-#### Why would I want to add a new viewport width cut-off?
-For those who want finer control over the look of their application, four categories of viewport sizes simply may not be enough. For example, what looks good with a viewport width of 350 pixels may not look good at a width of 600 pixels. Now you can create a new column type to split up that range, allowing you to fine-tune the look of your application easily at both sizes.
+Not only is continuous nesting verbose and messy, there are times when nesting
+just doesn't cut it. What if one element needs to have a width less than one
+twelfth of the container, but not be nested? This tool makes it easy.
 
-### Instructions
-Enter the name you'd like for your new css file in the File Name field. Use the Column Properties table to adjust properties of all columns. Use the Column Types table to define new types of columns for different viewport widths. Enter the number of columns you would like to generate. Select the Minify box if you want the generated file to be compact. Press the Generate button to generate your new file!
+### Why would I want to add a new viewport width cut-off?
+For those who want finer control over the look of their application, four
+categories of viewport sizes simply may not be enough. For example, what looks
+good with a viewport width of 350 pixels may not look good at a width of 600
+pixels. Now you can create a new column type to split up that range, allowing
+you to fine-tune the look of your application easily at both sizes.
 
-### Example
-[An example of a bootstrap grid extension in action.](http://adamheins.github.io/bootstrap-grid-extension-generator/)
+## Instructions
+To run the program, change to this repo's directory and run
+```
+java -jar Bootstrap-Grid-Extension-Generator.jar
+```
 
-### Contact
-adamwheins@gmail.com
+Once the program is running, do the following:
+1. Enter the name you'd like for your new css file in the File Name field.
+2. Use the Column Properties table to adjust properties of all columns.
+3. Use the Column Types table to define new types of columns for different
+   viewport widths.
+4. Enter the number of columns you would like to generate.
+5. Select the Minify box if you want the generated file to be compact.
+6. Press the Generate button to generate your new file!
+
+## Example
+An [example](http://adamheins.github.io/bootstrap-grid-extension-generator/) of
+a bootstrap grid extension in action.
+
+## Contact
+mail@adamheins.com
