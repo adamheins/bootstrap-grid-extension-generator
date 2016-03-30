@@ -29,13 +29,13 @@ java -jar Bootstrap-Grid-Extension-Generator.jar
 ```
 
 Once the program is running, do the following:
-1. Enter the name you'd like for your new css file in the File Name field.
-2. Use the Column Properties table to adjust properties of all columns.
+1. Enter the name you'd like for your new css file in the File Name field.  
+2. Use the Column Properties table to adjust properties of all columns.  
 3. Use the Column Types table to define new types of columns for different
-   viewport widths.
-4. Enter the number of columns you would like to generate.
-5. Select the Minify box if you want the generated file to be compact.
-6. Press the Generate button to generate your new file!
+   viewport widths.  
+4. Enter the number of columns you would like to generate.  
+5. Select the Minify box if you want the generated file to be compact.  
+6. Press the Generate button to generate your new file!  
 
 ## Example
 An [example](http://adamheins.github.io/bootstrap-grid-extension-generator/) of
